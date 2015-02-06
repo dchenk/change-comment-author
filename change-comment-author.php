@@ -64,6 +64,13 @@ class WDS_Change_Comment_Author {
 		$select .= '</label>';
 		$select .= '</p>';
 
+		/**
+		 * Filter the user dropdown select output
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param string $can_edit User dropdown select output
+		 */
 		echo apply_filters( 'wds_change_comment_author_select', $select );
 	}
 
@@ -229,6 +236,16 @@ class WDS_Change_Comment_Author {
 	public function get_user_query_results() {
 		global $wpdb;
 
+		/**
+		 * Filter the query results before it is retrieved. Allows overriding query
+		 *
+		 * Passing an array value to the filter will short-circuit retrieving
+		 * the query results, returning the passed value instead.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array|mixed $results Query results. Default null to skip it.
+		 */
 		$results = apply_filters( 'wds_change_comment_author_pre_get_users', null );
 
 		if ( is_array( $results ) ) {
@@ -250,6 +267,13 @@ class WDS_Change_Comment_Author {
 
 		$results = empty( $user_query->results ) ? array() : (array) $user_query->results;
 
+		/**
+		 * Filter the query results after they are retrieved.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array $results Array of user query results.
+		 */
 		$results = apply_filters( 'wds_change_comment_author_get_users', $results );
 
 		return $results;
@@ -288,6 +312,13 @@ class WDS_Change_Comment_Author {
 	 * @return boolean Whether current user has permission to edit comment authors
 	 */
 	public function has_permission() {
+		/**
+		 * Filter the permission level for being able to edit comment authors
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param bool $can_edit Whether current user can edit comment authors
+		 */
 		return apply_filters( 'wds_change_comment_author_permissions', current_user_can( 'manage_options' ) );
 	}
 
