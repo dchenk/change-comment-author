@@ -319,7 +319,7 @@ class WDS_Change_Comment_Author {
 		 *
 		 * @param bool $can_edit Whether current user can edit comment authors
 		 */
-		return apply_filters( 'wds_change_comment_author_permissions', current_user_can( 'manage_options' ) );
+		return current_user_can( apply_filters( 'wds_change_comment_author_capability', 'manage_options' ) );
 	}
 
 }
