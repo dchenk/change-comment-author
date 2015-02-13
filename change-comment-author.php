@@ -36,6 +36,8 @@ class WDS_Change_Comment_Author {
 		add_filter( 'pre_comment_author_url', array( $this, 'set_comment_author_url' ) );
 		add_filter( 'pre_comment_author_email', array( $this, 'set_comment_author_email' ) );
 		add_filter( 'edit_comment', array( $this, 'set_commentor_id_for_sure' ) );
+
+		add_action( 'admin_footer', array( $this, 'append_comment_dropdown' ) );
 	}
 
 	/**
@@ -46,11 +48,12 @@ class WDS_Change_Comment_Author {
 	 * @since  0.1.0
 	 */
 	public function select_commentor_dropbox() {
+
 		if ( ! $this->has_permission() ) {
 			return;
 		}
 
-		$curr_user = ! is_admin() ? get_current_user_id() : 0;
+		$curr_user = get_current_user_id();
 
 		$select = '';
 		$select .= '<p>';
@@ -220,6 +223,8 @@ class WDS_Change_Comment_Author {
 			}
 		}
 
+		asort( $this->user_options, SORT_STRING );
+
 		return $this->user_options;
 	}
 
@@ -287,6 +292,13 @@ class WDS_Change_Comment_Author {
 	 * @return WP_User object | false  If successful, a WP_User object
 	 */
 	public function get_userdata() {
+
+		if ( isset( $_POST['user_ID'] ) ) {
+			$userid = (int) $_POST['user_ID'];
+			$this->user_data = get_userdata( $userid );
+			return $this->user_data;
+		}
+
 		if ( ! isset( $_POST['comment_author_selection'] ) || ! $_POST['comment_author_selection'] ) {
 			return false;
 		}
@@ -320,6 +332,35 @@ class WDS_Change_Comment_Author {
 		 * @param bool $can_edit Whether current user can edit comment authors
 		 */
 		return current_user_can( apply_filters( 'wds_change_comment_author_capability', 'manage_options' ) );
+	}
+
+	public function append_comment_dropdown(){
+		global $pagenow;
+		if( 'edit-comments.php' !== $pagenow ){
+			return;
+		}
+
+		?>
+<div id="wds-commentor-dropdown" style="padding: 0 5px;">
+	<?php echo $this->select_commentor_dropbox(); ?>
+</div>
+<script type="text/javascript">
+	jQuery( document ).ready( function( $ ){
+		var $the_author = $('#user_ID'),
+			$the_dropdown = $('#wds-commentor-dropdown'),
+			$reply_location = $('#replyhead');
+
+		$( 'body').on( 'change', 'select[name="comment_author_selection"]', function(){
+			var new_id = $( this ).val();
+			$the_author.attr( 'value', new_id );
+		} );
+
+		$reply_location.append( $the_dropdown );
+
+
+	});
+</script>
+		<?php
 	}
 
 }
