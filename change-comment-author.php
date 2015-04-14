@@ -56,9 +56,9 @@ class WDS_Change_Comment_Author {
 		$curr_user = get_current_user_id();
 
 		$select = '';
-		$select .= '<p>';
+		$select .= '<p class="comment_author_selection_wrapper">';
 		$select .= '<label>' . __( 'Comment as:', 'wds-change-comment-author' ) . '<br>';
-		$select .= '<select name="comment_author_selection" style="width: 200px;">';
+		$select .= '<select name="comment_author_selection" class="comment_author_selection">';
 		$select .= '<option>' . __( 'Select A User', 'wds-change-comment-author' ) . '</option>';
 		foreach ( $this->get_user_options() as $id => $name ) {
 			$select .= '<option value="'. $id .'" '. selected( $id, $curr_user, false ) .'>'. $name .'</option>';
