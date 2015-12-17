@@ -335,7 +335,7 @@ class WDS_Change_Comment_Author {
 
 	public function append_comment_dropdown() {
 		$screen = get_current_screen();
-		if ( ! isset( $screen->id ) || 'edit-comments.php' !== $screen->id ) {
+		if ( ! isset( $screen->id ) || 'edit-comments' !== $screen->id ) {
 			return;
 		}
 
