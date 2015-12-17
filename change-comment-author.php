@@ -48,7 +48,6 @@ class WDS_Change_Comment_Author {
 	 * @since  0.1.0
 	 */
 	public function select_commentor_dropbox() {
-
 		if ( ! $this->has_permission() ) {
 			return;
 		}
@@ -334,9 +333,9 @@ class WDS_Change_Comment_Author {
 		return current_user_can( apply_filters( 'wds_change_comment_author_capability', 'manage_options' ) );
 	}
 
-	public function append_comment_dropdown(){
-		global $pagenow;
-		if( 'edit-comments.php' !== $pagenow ){
+	public function append_comment_dropdown() {
+		$screen = get_current_screen();
+		if ( ! isset( $screen->id ) || 'edit-comments.php' !== $screen->id ) {
 			return;
 		}
 
