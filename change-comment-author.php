@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: WDS Change Comment Author
-Version: 0.1.0
+Plugin Name: Change Comment Author
+Version: 0.1.1
 Description: Allows admins to update/edit the authors of existing comments in wp-admin. Also adds dropdown next to comment box for selecting an alternate user to comment as.
 Author: WebDevStudios
 Author URI: https://webdevstudios.com/
@@ -20,12 +20,10 @@ class WDS_Change_Comment_Author {
 	/**
 	 * Array of user options for the dropdowns
 	 */
-	protected $user_options = array();
+	protected $user_options = [];
 
 	/**
 	 * Hook in to WordPress
-	 *
-	 * @since  0.1.0
 	 */
 	public function hooks() {
 		add_action( 'comment_form', array( $this, 'select_commentor_dropbox' ), 99 );
@@ -44,8 +42,6 @@ class WDS_Change_Comment_Author {
 	 * Adds a User dropdown to allow admins to assign comments to users
 	 *
 	 * Use the wds_change_comment_author_select filter to modify output
-	 *
-	 * @since  0.1.0
 	 */
 	public function select_commentor_dropbox() {
 		if ( ! $this->has_permission() ) {
@@ -69,8 +65,6 @@ class WDS_Change_Comment_Author {
 		/**
 		 * Filter the user dropdown select output
 		 *
-		 * @since 0.1.0
-		 *
 		 * @param string $can_edit User dropdown select output
 		 */
 		echo apply_filters( 'wds_change_comment_author_select', $select );
@@ -78,8 +72,6 @@ class WDS_Change_Comment_Author {
 
 	/**
 	 * Gathers the information for the chosen user to assign a comment to
-	 *
-	 * @since  0.1.0
 	 *
 	 * @param  array  $commentdata Array of comment data to save
 	 *
@@ -101,8 +93,6 @@ class WDS_Change_Comment_Author {
 	/**
 	 * Maybe modify the saved user ID
 	 *
-	 * @since 0.1.0
-	 *
 	 * @param mixed  $original_value Original user ID
 	 *
 	 * @return mixed                 Possibly modified ID
@@ -113,8 +103,6 @@ class WDS_Change_Comment_Author {
 
 	/**
 	 * Maybe modify the saved user name
-	 *
-	 * @since 0.1.0
 	 *
 	 * @param mixed  $original_value Original user name
 	 *
@@ -127,8 +115,6 @@ class WDS_Change_Comment_Author {
 	/**
 	 * Maybe modify the saved user email
 	 *
-	 * @since 0.1.0
-	 *
 	 * @param mixed  $original_value Original user email
 	 *
 	 * @return mixed                 Possibly modified email
@@ -140,8 +126,6 @@ class WDS_Change_Comment_Author {
 	/**
 	 * Maybe modify the saved user url
 	 *
-	 * @since 0.1.0
-	 *
 	 * @param mixed  $original_value Original user url
 	 *
 	 * @return mixed                 Possibly modified url
@@ -152,8 +136,6 @@ class WDS_Change_Comment_Author {
 
 	/**
 	 * Handles returning a modified user paramater
-	 *
-	 * @since 0.1.0
 	 *
 	 * @param mixed  $original_value Original user value
 	 * @param string $param          User param to modify
@@ -175,8 +157,6 @@ class WDS_Change_Comment_Author {
 	 * wp_update_comment function, so we need to do it manually
 	 *
 	 * Will only run if we've passed other areas.
-	 *
-	 * @since 0.1.0
 	 *
 	 * @param int  $comment_ID The comment ID of the comment to update
 	 */
@@ -201,8 +181,6 @@ class WDS_Change_Comment_Author {
 	/**
 	 * Retrieve an array of users for a select dropdown
 	 *
-	 * @since  0.1.0
-	 *
 	 * @return array  Array of users. user_id => user name/email
 	 */
 	public function get_user_options() {
@@ -213,7 +191,7 @@ class WDS_Change_Comment_Author {
 
 		$results = $this->get_user_query_results();
 		if ( empty( $results ) ) {
-			return array();
+			return [];
 		}
 
 		foreach ( $results as $user ) {
@@ -233,8 +211,6 @@ class WDS_Change_Comment_Author {
 	 * Can be overridden with wds_change_comment_author_pre_get_users
 	 * or wds_change_comment_author_get_users
 	 *
-	 * @since  0.1.0
-	 *
 	 * @return array  Array of user objects
 	 */
 	public function get_user_query_results() {
@@ -245,8 +221,6 @@ class WDS_Change_Comment_Author {
 		 *
 		 * Passing an array value to the filter will short-circuit retrieving
 		 * the query results, returning the passed value instead.
-		 *
-		 * @since 0.1.0
 		 *
 		 * @param array|mixed $results Query results. Default null to skip it.
 		 */
@@ -269,12 +243,10 @@ class WDS_Change_Comment_Author {
 			)
 		) );
 
-		$results = empty( $user_query->results ) ? array() : (array) $user_query->results;
+		$results = empty( $user_query->results ) ? [] : (array) $user_query->results;
 
 		/**
 		 * Filter the query results after they are retrieved.
-		 *
-		 * @since 0.1.0
 		 *
 		 * @param array $results Array of user query results.
 		 */
@@ -286,12 +258,9 @@ class WDS_Change_Comment_Author {
 	/**
 	 * Retrieve user data for the user selected in the dropdown
 	 *
-	 * @since  0.1.0
-	 *
 	 * @return WP_User object | false  If successful, a WP_User object
 	 */
 	public function get_userdata() {
-
 		if ( isset( $_POST['user_ID'] ) ) {
 			$userid = (int) $_POST['user_ID'];
 			$this->user_data = get_userdata( $userid );
@@ -318,15 +287,11 @@ class WDS_Change_Comment_Author {
 	 *
 	 * Can be overridden with the	wds_change_comment_author_can_edit filter
 	 *
-	 * @since  0.1.0
-	 *
 	 * @return boolean Whether current user has permission to edit comment authors
 	 */
 	public function has_permission() {
 		/**
 		 * Filter the permission level for being able to edit comment authors
-		 *
-		 * @since 0.1.0
 		 *
 		 * @param bool $can_edit Whether current user can edit comment authors
 		 */
@@ -355,7 +320,6 @@ class WDS_Change_Comment_Author {
 		} );
 
 		$reply_location.append( $the_dropdown );
-
 
 	});
 </script>
